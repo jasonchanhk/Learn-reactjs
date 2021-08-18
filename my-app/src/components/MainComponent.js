@@ -6,6 +6,7 @@ import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Home from './HomeComponent';
 import Contact from './ContactComponent';
+import About from './AboutComponent';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { COMMENTS } from '../shared/comments';
 import { PROMOTIONS } from '../shared/promotions';
@@ -35,15 +36,27 @@ class Main extends Component {
                 leader={this.state.leaders.filter((leader) => leader.featured)[0]}
             />
         );
-      }
+    }
 
+    const DishWithId = ({match}) => {
+        {/*Match carry router parameter inside it as its own properties*/}
+        {/*match.params.___ by inserting the key, we can extract the value (parseInt is to turn "string" in to integer) */}
+        return(
+            <DishDetail dish={this.state.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
+              comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} />
+        );
+    };
+      
     return (
       <div>
         <Header />
             <Switch>
                 <Route path='/home' component={HomePage} />
+                <Route path='/aboutus' component={() => <About leaders={this.state.leaders} />} />
                 <Route exact path='/menu' component={() => <Menu dishes={this.state.dishes} />} />
                 <Route exact path='/contactus' component={Contact} />
+                {/* path can also carry parameter values, by starting with a ":" it will be interpreted as router parameter*/}
+                <Route path='/menu/:dishId' component={DishWithId} />
                 <Redirect to="/home" />
             </Switch>
           <Footer />
